@@ -1,0 +1,40 @@
+#!/bin/bash
+# Entradas a listado de guaraní
+
+RA_programa="/mnt/Datos/home/GrupoEuroga/bin/guarani"
+esgu="es-gu"
+gues="gu-es"
+es="es.log"
+gu="gu.log"
+
+ruta_anterior="$pwd"
+cd $RA_programa
+
+printf 'Introduce el grupo de la nueva entrada\n'
+read grupo
+
+printf 'Expresión en guaraní\n'
+read guarani
+
+printf 'Expresión en español\n'
+read espanol
+
+printf 'Observaciones\n'
+read observaciones
+
+# Me falta ordenar las entradas alfabéticamente y por grupos
+printf "%s: %s -> %s" "$guarani" "$espanol" "$observaciones" >> $gues.$grupo.log
+printf "\n$guarani" >> $gu
+
+# Para sinónimos en español:
+IFS=';' read -a arr_esp <<< $espanol # Utiliza como separador ';'
+
+for esp in "${arr_esp[@]}"; do
+#printf "\n$grupo:\n" >> $esgu.$grupo.log
+#printf "\n" >> $esgu.$grupo.log
+printf "$esp: " | sed 's/^ //g' >> $esgu.$grupo.log
+printf "%s -> %s" "$guarani" "$observaciones" >> $esgu.$grupo.log
+printf "$esp" | sed 's/^ //g' >> $es
+done
+
+cd $ruta_anterior
